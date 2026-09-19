@@ -1,0 +1,8 @@
+# Enforce strict mode by enabling all optional checks
+enable=all
+
+# Set the default shell dialect if a shebang is missing (change to bash or sh as needed)
+shell=sh
+
+# Optional: Uncomment and list specific warning codes to ignore if 'all' becomes too noisy
+# disable=SC1090,SC1091

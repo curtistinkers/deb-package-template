@@ -1,0 +1,15 @@
+Source: {{ package_name }}
+Section: {{ package_section }}
+Priority: {{ package_priority }}
+Maintainer: {{ maintainer_name }} <{{ maintainer_email }}>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.2
+Vcs-Browser: {{ package_git_url }}
+Vcs-Git: {{ package_git_url }}.git
+
+Package: {{ package_name }}
+Architecture: {{ package_architecture }}
+Depends:
+ ${misc:Depends}
+Description: {{ short_description }}
+ {{ long_description }}

@@ -1,0 +1,12 @@
+build/
+**/*.deb
+**/*.build
+**/*.buildinfo
+**/*.changes
+**/*.dsc
+**/*.tar.gz
+**/.debhelper
+**/debhelper-build-stamp
+**/*.substvars
+**/{{ package_name }}/*
+**/debian/files

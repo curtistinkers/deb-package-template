@@ -1,0 +1,34 @@
+#!/bin/sh
+set -e
+
+PACKAGE_NAME="{{ package_name }}"
+SCRIPT_NAME="postrm"
+
+# --- Helper Functions ---
+
+
+
+# --- Main Logic Execution ---
+
+case "$1" in
+	remove)
+    ;;
+
+    purge)
+    ;;
+
+    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+	;;
+
+    *)
+        ARG="${1:-none}"
+        echo "${PACKAGE_NAME}: ${SCRIPT_NAME} called with unknown argument \`${ARG}\`" >&2
+        exit 1
+    ;;
+
+esac
+
+# Automatically injects standard debhelper maintenance routines
+#DEBHELPER#
+
+exit 0
