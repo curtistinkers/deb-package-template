@@ -1,4 +1,23 @@
+<!-- REMOVE -->
+# Debian Package Template
+
+The `generate.sh` script prompts for defined keys and applies replacements to `README.md`, `LICENSE.md`, and any files
+found under `package/debian/` to simply starting a new package.
+
+## Usage
+
+Run the script directly without arguments:
+
+```bash
+./generate.sh
+```
+
+<!-- /REMOVE -->
 # `{{ package_name }}`
+
+{{ short_description }}
+
+{{ long_description }}
 
 ## Build Debian Package
 
