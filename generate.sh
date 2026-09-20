@@ -3,15 +3,22 @@ set -euo pipefail
 
 # Defines the list of Liquid replacement keys configured in this script.
 get_defined_keys() {
-    echo "site_title"
-    echo "author_name"
-    echo "version"
+    echo "package_name"
+    echo "package_section"
+    echo "package_priority"
+    echo "maintainer_name"
+    echo "maintainer_email"
+    echo "package_git_url"
+    echo "package_architecture"
+    echo "short_description"
+    echo "long_description"
+    echo "copyright_year"
 }
 
 # Prints usage information for the script.
 print_usage() {
-    echo "Usage: ${0} <directory_or_file>"
-    echo "Prompts for values of pre-defined keys and replaces Liquid-style tags in the target."
+    echo "Usage: ${0}"
+    echo "Prompts for values of pre-defined keys and replaces Liquid-style tags in ./README.md, ./LICENSE.md, and ./package/debian/*."
 }
 
 # Substitutes Liquid tags within a single specified file.
@@ -25,61 +32,52 @@ substitute_tags() {
         return 1
     fi
 
-    local escaped_value
-    escaped_value=$(printf '%s\n' "${value}" | sed -e 's/[\/&]/\\&/g')
+    local formatted_val=""
+    formatted_val="$(printf '%s\n' "${value}")"
+
+    local escaped_value=""
+    escaped_value="$(printf '%s\n' "${formatted_val}" | sed -e 's/[\/&]/\\&/g')"
 
     sed -E -i.bak "s/\\{\\{\\s*${key}\\s*\\}\\}/${escaped_value}/g" "${file}"
     rm -f "${file}.bak"
 }
 
-# Recursively processes all files inside a given directory.
-process_directory() {
+# Processes hardcoded targets (README, LICENSE, and package/debian/*).
+process_targets() {
     local key="${1}"
     local value="${2}"
-    local dir="${3}"
 
-    if [[ ! -d "${dir}" ]]; then
-        echo "Error: Directory '${dir}' does not exist." >&2
-        return 1
-    fi
+    local target=""
+    for target in "./README.md" "./LICENSE.md"; do
+        if [[ -f "${target}" ]]; then
+            substitute_tags "${key}" "${value}" "${target}"
+        fi
+    done
 
-    local file=""
-    while IFS= read -r -d '' file; do
-        substitute_tags "${key}" "${value}" "${file}"
-    done < <(find "${dir}" -type f -print0)
-}
-
-# Applies substitutions for a given key-value pair to a file or directory.
-apply_replacements() {
-    local target="${1}"
-    local key="${2}"
-    local value="${3}"
-
-    if [[ -d "${target}" ]]; then
-        process_directory "${key}" "${value}" "${target}"
-    elif [[ -f "${target}" ]]; then
-        substitute_tags "${key}" "${value}" "${target}"
-    else
-        echo "Error: Target '${target}' is neither a valid file nor directory." >&2
-        return 1
+    if [[ -d "./package/debian" ]]; then
+        local file=""
+        while IFS= read -r -d '' file; do
+            substitute_tags "${key}" "${value}" "${file}"
+        done < <(find "./package/debian" -type f -print0 || true)
     fi
 }
 
-# Prompts for each pre-defined key and applies substitutions across the target.
+# Prompts for each pre-defined key and applies substitutions across all targets.
 prompt_and_process() {
-    local target="${1}"
     local keys=()
+    local raw_keys=""
 
-    readarray -t keys < <(get_defined_keys)
+    raw_keys="$(get_defined_keys)"
+    readarray -t keys <<< "${raw_keys}"
 
     if [[ "${#keys[@]}" -eq 0 ]]; then
         echo "Error: No keys defined in get_defined_keys()." >&2
         return 1
     fi
 
-    declare -A variable_values
+    declare -A variable_values=()
 
-    local key
+    local key=""
     for key in "${keys[@]}"; do
         local user_val=""
         read -r -p "Enter value for '${key}': " user_val
@@ -87,19 +85,18 @@ prompt_and_process() {
     done
 
     for key in "${keys[@]}"; do
-        apply_replacements "${target}" "${key}" "${variable_values["${key}"]}"
+        process_targets "${key}" "${variable_values["${key}"]}"
     done
 }
 
 # Main orchestration function.
 main() {
-    if [[ "${#}" -ne 1 ]]; then
+    if [[ "${#}" -gt 0 ]]; then
         print_usage
         exit 1
     fi
 
-    local target="${1}"
-    prompt_and_process "${target}"
+    prompt_and_process
 }
 
 main "${@}"
