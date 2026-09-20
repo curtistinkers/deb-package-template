@@ -112,7 +112,7 @@ main() {
 
     prompt_and_process
 
-    rm -f Makefile generate.sh
+    rm -f generate.sh
 }
 
 main "${@}"
