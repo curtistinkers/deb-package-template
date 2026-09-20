@@ -21,7 +21,8 @@ Run the script directly without arguments:
 
 ## Build Debian Package
 
-Build the package using the included build script or using debuild directly.
+Build the package using `make`, the included build script `build.sh`, or using debuild directly. Using `make` or
+`build.sh` will output the files into `dist/` and cleanup all the extra files that debuild leaves behind.
 
 ### Install build requirements
 
@@ -29,13 +30,19 @@ Build the package using the included build script or using debuild directly.
 apt update && apt install devscripts
 ```
 
-### Build with help script
+### Build using `make`
+
+```bash
+make build
+```
+
+### Build using the helper script
 
 ```bash
 ./build.sh
 ```
 
-### Build directly with debuild
+### Build using `debuild`
 
 ```bash
 cd package && debuild -us -uc -b
