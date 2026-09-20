@@ -32,6 +32,7 @@ prepare:
 	@if [ ! -d "$(SOURCE_DIR)/debian" ]; then \
 		echo "❌ Error: '$(SOURCE_DIR)' is not a valid Debian package directory (missing 'debian/' folder)." >&2; \
 		exit 1; \
+	fi
 	@if [ -z "$(PACKAGE_NAME)" ]; then \
 		echo "❌ Error: Could not determine Package name from '$(SOURCE_DIR)/debian/control'." >&2; \
 		exit 1; \
