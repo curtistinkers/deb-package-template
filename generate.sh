@@ -21,6 +21,18 @@ print_usage() {
     echo "Prompts for values of pre-defined keys and replaces Liquid-style tags in ./README.md, ./LICENSE.md, and ./package/debian/*."
 }
 
+# Removes the template header block from README.md between REMOVE comments.
+remove_readme_header() {
+    local file="./README.md"
+    if [[ ! -f "${file}" ]]; then
+        return 1
+    fi
+
+    # Delete lines from <!-- REMOVE --> to <!-- /REMOVE --> inclusive
+    sed -E -i.bak '/<!-- REMOVE -->/,/<!-- \/REMOVE -->/d' "${file}"
+    rm -f "${file}.bak"
+}
+
 # Substitutes Liquid tags within a single specified file.
 substitute_tags() {
     local key="${1}"
@@ -64,6 +76,8 @@ process_targets() {
 
 # Prompts for each pre-defined key and applies substitutions across all targets.
 prompt_and_process() {
+    remove_readme_header
+
     local keys=()
     local raw_keys=""
 
@@ -100,3 +114,5 @@ main() {
 }
 
 main "${@}"
+
+exit 0
