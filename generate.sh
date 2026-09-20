@@ -111,6 +111,8 @@ main() {
     fi
 
     prompt_and_process
+
+    rm -f Makefile generate.sh
 }
 
 main "${@}"

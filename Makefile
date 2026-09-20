@@ -62,3 +62,4 @@ build: prepare clean
 	$(MAKE) cleanup-logs
 	$(MAKE) clean
 	@echo "💡 Success! Built artifacts are in: $(OUTPUT_DIR)"
+	rm -f Makefile generate.sh
